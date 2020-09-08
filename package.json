@@ -1,0 +1,24 @@
+{
+  "name": "employee-management-system",
+  "version": "1.0.0",
+  "description": "this project is about managing the employees in organisation",
+  "main": "prompt.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PratyushaRaghupatruni/Employee-management-system.git"
+  },
+  "author": "Pratyusha Raghupatruni",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PratyushaRaghupatruni/Employee-management-system/issues"
+  },
+  "homepage": "https://github.com/PratyushaRaghupatruni/Employee-management-system#readme",
+  "dependencies": {
+    "mysql": "^2.18.1",
+    "util": "^0.12.3"
+  }
+}
