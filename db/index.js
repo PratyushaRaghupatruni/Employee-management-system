@@ -1,6 +1,4 @@
-const { addEmployee, addRole } = require("../prompt");
 
-module.exports = new DB(connection);
 
 class DB {
     constructor(connection) {
@@ -38,7 +36,7 @@ class DB {
                 department.name AS Department,
                 salary AS Salary,
                 concat(e2.first_name,' ',e2.last_name) AS Manager
-            from 
+            FROM
                 employee e1
             LEFT OUTER JOIN
                 role ON e1.role_id=role.id
@@ -60,7 +58,7 @@ class DB {
                 department.name AS Department,
                 salary AS Salary,
                 concat(e2.first_name,' ',e2.last_name) AS Manager
-            from 
+            FROM 
                 employee e1
             LEFT OUTER JOIN
                 role ON e1.role_id=role.id
@@ -229,4 +227,4 @@ class DB {
 
 }
 
-
+module.exports = new DB(connection);
