@@ -32,22 +32,19 @@ CREATE TABLE role(
 
 );
 -- Creates the table "people" within employee_db --
+
+
 CREATE TABLE employee (
 
-  id INTEGER auto_increment not null,
-
-  first_name VARCHAR(30),
-
-  last_name VARCHAR(30),
-
-  role_id INTEGER,
-
-  CONSTRAINT fk_role FOREIGN KEY(role_id)
-  REFERENCES role(id)
-  ON UPDATE CASCADE
-  ON DELETE CASCADE,
-
+  id INTEGER not null auto_increment,
+  first_name VARCHAR(30) not null,
+  last_name VARCHAR(30) not null,
+   role_id INTEGER,
   manager_id INTEGER,
+   CONSTRAINT fk_role FOREIGN KEY(role_id)
+    REFERENCES role(id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
 
   CONSTRAINT fk_employee FOREIGN KEY(manager_id)
   REFERENCES employee(id)
