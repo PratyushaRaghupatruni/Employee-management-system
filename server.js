@@ -3,6 +3,7 @@ const inquirer=require('inquirer');
 const logo=require('asciiart-logo');
 const prompt=require("./prompt");
 const db=require("./db");
+const { viewAllEmployeesByDepartment } = require('./db');
 require('console.table');
 
 async function viewAllEmployees(){
@@ -19,10 +20,10 @@ async function mainprompt(){
           await viewAllEmployees();
           break;
        case 'View all Employees by department':
-          await viewAllEmployeesByDepartment();
+          await getEmployeesByDepartment();
           break;
-       case 'View all Employees by department':
-          await viewAllEmployeesByDepartment();
+       case 'View all Employees by manager':
+          await getEmployeesByManager();
           break;
        case 'View all Roles' :
           await viewAllRoles();
@@ -54,3 +55,32 @@ async function mainprompt(){
                 
 }
 }
+
+async function getEmployeesByDepartment(){
+    const employee = await db.viewAllEmployeesByDepartment();
+    console.log("/n");
+    console.table(employee);
+    mainprompt();
+}
+
+async function getEmployeesByManager(){
+    const employee = await db.viewAllEmployeesByDepartment();
+    console.log("/n");
+    console.table(employee);
+    mainprompt();
+}
+
+async function viewAllDepartments(){
+    const departments=await db.viewAllDepartments();
+    console.log("/n");
+    console.table(departments);
+    mainprompt();
+}
+
+async function viewAllRoles(){
+    const roles=await db.viewAllRoles();
+    console.log("/n");
+    console.table(roles);
+    mainprompt();
+}
+
