@@ -1,4 +1,7 @@
+"use strict";
 
+// Get database connection
+const connection = require("./connection");
 
 class DB {
     constructor(connection) {
@@ -96,8 +99,7 @@ class DB {
                 },
                 function (err, res) {
                     if (err) throw err;
-                    console.log(
-                        `\nSuccessfully added employee with firstName:${firstName}, lastName:${lastName}, roleId:${roleId}, managerId:{managerId}`
+                    console.log(`\nSuccessfully added employee with firstName:${firstName}, lastName:${lastName}, roleId:${roleId}, managerId:{managerId}`
                     );
                     return res;
                 }

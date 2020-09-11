@@ -2,14 +2,14 @@ module.exports={
     mainPrompt:[
         {
             type:'list',
-            name:'welcome',
+            name:'choices',
             message:'what would you like to do',
             choices:[
-                'View all employees',
-                'View all employees by department',
-                'View all employees by manager',
-                'View all roles',
-                'View all departments',
+                'View all Employees',
+                'View all Employees by department',
+                'View all Employees by manager',
+                'View all Roles',
+                'View all Departments',
                 'Add Employee',
                 'Add Department',
                 'Add Role',
