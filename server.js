@@ -3,7 +3,7 @@ const inquirer=require('inquirer');
 const logo=require('asciiart-logo');
 const prompt=require("./prompt");
 const db=require("./db");
-const { viewAllEmployeesByDepartment } = require('./db');
+const { viewAllEmployeesByDepartment, addDepartment } = require('./db');
 require('console.table');
 
 async function viewAllEmployees(){
@@ -14,13 +14,16 @@ async function viewAllEmployees(){
 }
 
 async function mainprompt(){
-    const {list} = inquirer.prompt(prompt.mainPrompt);
-    switch(list){
+  
+    const {menuList} = await inquirer.prompt(prompt.mainPrompt);
+
+    switch(menuList){
        case 'View all Employees':
-          await viewAllEmployees();
+           viewAllEmployees();
           break;
        case 'View all Employees by department':
-          await getEmployeesByDepartment();
+          console.log('enterd switch case');
+          getEmployeesByDepartment();
           break;
        case 'View all Employees by manager':
           await getEmployeesByManager();
@@ -56,15 +59,17 @@ async function mainprompt(){
 }
 }
 
-async function getEmployeesByDepartment(){
-    const employee = await db.viewAllEmployeesByDepartment();
+async function  getEmployeesByDepartment(){
+    console.log("welcome to employees by department");
+    const empbydep = await db.viewAllEmployeesByDepartment();
     console.log("/n");
-    console.table(employee);
+    console.table(empbydep);
     mainprompt();
 }
 
 async function getEmployeesByManager(){
-    const employee = await db.viewAllEmployeesByDepartment();
+    console.log("welcome to employees by manager");
+    const employee= await db.viewAllEmployeesByDepartment();
     console.log("/n");
     console.table(employee);
     mainprompt();
@@ -79,8 +84,68 @@ async function viewAllDepartments(){
 
 async function viewAllRoles(){
     const roles=await db.viewAllRoles();
-    console.log("/n");
+    console.log('/n');
     console.table(roles);
     mainprompt();
 }
 
+async function exitConnection(){
+    const endConnect=await db.exitConnection();  
+}
+
+async function addEmployee(){
+
+   const roleData=await db.viewAllRoles();
+   const managerData=await db.getEmployees();
+
+  let roleTitles=[];
+
+   for(let i=0;i<roleData.length;i++){
+      roleTitles.push(roleData[i].Title);
+   }
+
+
+  let empManager=[];
+   for(let i=0;i< managerData.length;i++){
+      empManager.push(managerData[i].first_name+' '+managerData[i].last_name);
+   }
+     empManager.push("none");
+
+   prompt.addEmployee.push({
+         type:'list',
+          name:'roleName',
+          message:'what is employer role?',
+          choices:roleTitles,
+   });
+   
+   prompt.addEmployee.push({
+        type:'list',
+        name:'manager',
+        message:'what is the manager of the employee',
+        choices:empManager,
+   });
+ 
+   const {firstName,lastName,roleName,manager}=await inquirer.prompt(prompt.addEmployee);
+
+  // const result = words.filter(word => word.length > 6);
+
+    const roleId=roleData.filter((role)=>role.Title===roleName)[0].ID;
+
+    const managerFirstName=manager.split(' ')[0];
+    const managerLastName=manager.split(' ')[1];
+    const managerId=managerData.filter
+                       ((empid)=>empid.first_name===managerFirstName &&
+                         empid.last_name===managerLastName )[0].id
+    console.log(managerId);
+
+   const addEmployeeResult = await db.addEmployee( firstName, lastName, roleId, managerId );
+     
+	viewAllEmployees();
+}
+
+async function addDepartment(){
+   const {depName}=await inquirer.prompt(prompt.departmentData);
+    const addDepartmentResult=await db.addDepartment(depName);
+    viewAllDepartments();
+}
+viewAllEmployees();

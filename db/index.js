@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 // Get database connection
 const connection = require("./connection");
@@ -72,9 +72,14 @@ class DB {
             ORDER BY
                 e1.manager_id;
          `);
-
-
     }
+
+    getEmployees(){
+        return this.connection.query(`
+           SELECT * from employee; 
+        `);
+    }
+    
     viewAllRoles() {
         return this.connection.query(`
            SELECT id AS ID,title AS Title,salary as Salary FROM role; 
@@ -88,8 +93,8 @@ class DB {
     }
 
     addEmployee(firstName, lastName, roleId, managerId) {
-        try {
-            this.connection.query(
+
+         return this.connection.query(
                 "INSERT INTO employee SET ?",
                 {
                     first_name: `${firstName}`,
@@ -97,62 +102,37 @@ class DB {
                     role_id: `${roleId}`,
                     manager_id: `${managerId}`,
                 },
-                function (err, res) {
-                    if (err) throw err;
-                    console.log(`\nSuccessfully added employee with firstName:${firstName}, lastName:${lastName}, roleId:${roleId}, managerId:{managerId}`
-                    );
-                    return res;
-                }
+               
             );
-        } catch (err) {
-            console.log("Error adding emploee : " + err);
-        }
     }
 
     addDepartment(depName) {
-      try{
-          this.connection.query(
+     
+       return  this.connection.query(
               "INSERT INTO department SET ?",
               {
                   name:`${depName}`,
 
               },
-              function (err, res) {
-                if (err) throw err;
-                console.log(
-                    `\nSuccessfully added department with name:${depName}`);
-                return res;
-            }
+              
           );
-        }
-        catch (err) {
-            console.log("Error adding Department : " + err);
-      }
     }
 
         addRole(roleTitle,roleSalary,roleDepartmentId) {
-            try{
-                this.connection.query(
+        
+              return  this.connection.query(
                     "INSERT INTO role SET ?",
                     {
                         title:`${roleTitle}`,
                         salary:`${roleSalary}`,
                         department_id:`${roleDepartmentId}`,
                     },
-                    function (err, res) {
-                      if (err) throw err;
-                      console.log(`\nSuccessfully added role with title:${roleTitle},salary:${roleSalary},department_id:${roleDepartmentId}`);
-                      return res;
-                  }
+                  
                 );
-              }
-              catch (err) {
-                  console.log("Error adding Role : " + err);
-            }
+              
     }
     updateEmployeeRole(roleId,empId){
-        try{
-            this.connection.query(
+        return  this.connection.query(
                 "UPDATE employee SET ? WHERE ?",
                 [
                 {
@@ -163,20 +143,11 @@ class DB {
                     id:`${empId}`,
                 }
             ],
-            function(err,res){
-                if (err) throw err;
-                console.log(`\nSuccessfully updated Employee role  `);
-                return res;
-            }
-            );
-        }
-        catch (err) {
-            console.log("Error updating Role : " + err);
-      }
+        );
     }
+
     updateEmployeeManager(managerId,empId) {
-        try{
-            this.connection.query(
+          return  this.connection.query(
                 "UPDATE employee SET ? WHERE ?",
                 [
                 {
@@ -187,37 +158,20 @@ class DB {
                     id:`${empId}`,
                 }    
             ],
-            function(err,res){
-                if (err) throw err;
-                console.log(`\nSuccessfully updated Employee Manager`);
-                return res;
-            }
             );
-        }
-        catch (err) {
-            console.log("Error updating Employee Manager: " + err);
-      }
     }
+
     removeEmployee(empId) {
-        try{
-            this.connection.query(
+         return  this.connection.query(
                 "DELETE FROM employee WHERE id=?",
                 [
                {
                    id:`${empId}`,
                }
                 ],
-            function(err,res){
-                if (err) throw err;
-                console.log(`\nSuccessfully removed Employee with id:${empId}`);
-                return res;
-            }
             );
-        }
-        catch (err) {
-            console.log("Error removin Employee: " + err);
-      }
     }
+    
     exitConnection() {
         try {
 			this.connection.end();

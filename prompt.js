@@ -2,7 +2,7 @@ module.exports={
     mainPrompt:[
         {
             type:'list',
-            name:'choices',
+            name:'menuList',
             message:'what would you like to do',
             choices:[
                 'View all Employees',
@@ -35,7 +35,7 @@ module.exports={
     departmentData:[
         { 
             type:'input',
-            name:'addDepartment',
+            name:'depName',
             message:'What department would you like to add'
 
         },
