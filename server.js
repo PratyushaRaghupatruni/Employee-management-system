@@ -6,6 +6,7 @@ const db=require("./db");
 require('console.table');
 
 async function viewAllEmployees(){
+   //to view all the employees firstname lastname title salary department manager name
     const employee = await db.viewAllEmployees();
     console.log("\n");
     console.table(employee);
@@ -13,7 +14,8 @@ async function viewAllEmployees(){
 }
 
 async function mainprompt(){
-  
+    
+   //switch case to determine the users choice perform that particular  function
     const {menuList} = await inquirer.prompt(prompt.mainPrompt);
 
     switch(menuList){
@@ -59,6 +61,7 @@ async function mainprompt(){
 }
 
 async function  getEmployeesByDepartment(){
+   //getting all the employees by department
     console.log("welcome to employees by department");
     const empbydep = await db.viewAllEmployeesByDepartment();
     console.log("/n");
@@ -67,14 +70,16 @@ async function  getEmployeesByDepartment(){
 }
 
 async function getEmployeesByManager(){
+   //getting alll the employees list by manager
     console.log("welcome to employees by manager");
-    const employee= await db.viewAllEmployeesByDepartment();
+    const employee= await db.viewAllEmployeesByManager();
     console.log("/n");
     console.table(employee);
     mainprompt();
 }
 
 async function viewAllDepartments(){
+   //view all the departments
     const departments=await db.viewAllDepartments();
     console.log("/n");
     console.table(departments);
@@ -82,6 +87,7 @@ async function viewAllDepartments(){
 }
 
 async function viewAllRoles(){
+   //view all the roles
     const roles=await db.viewAllRoles();
     console.log('/n');
     console.table(roles);
@@ -96,26 +102,27 @@ async function getRoles(){
 }
 
 async function exitConnection(){
+   //function to exit  database connection
     const endConnect=await db.exitConnection();  
 }
 
 async function addEmployee(){
-
+//to get the roles from database
    const roleData=await db.viewAllRoles();
+   //to get the employees llist from database
    const managerData=await db.getEmployees();
 
   let roleTitles=[];
-
+//to get the role title to the array
    for(let i=0;i<roleData.length;i++){
       roleTitles.push(roleData[i].Title);
    }
-
+//initilising array to get the manager first and last name
   let empManager=[];
    for(let i=0;i< managerData.length;i++){
       empManager.push(managerData[i].first_name+' '+managerData[i].last_name);
    }
-     empManager.push("none");
-
+    //prompts to get the employer role and manager name ffrom the user
    prompt.addEmployee.push({
          type:'list',
           name:'roleName',
@@ -142,13 +149,14 @@ async function addEmployee(){
                        ((empid)=>empid.first_name===managerFirstName &&
                          empid.last_name===managerLastName )[0].id
     console.log(managerId);
-
+//calling the database connection to add employee
    const addEmployeeResult = await db.addEmployee( firstName, lastName, roleId, managerId );
      
 	viewAllEmployees();
 }
 
 async function addDepartment(){
+   //adding the department name
    const {depName}=await inquirer.prompt(prompt.addDepartment);
     const addDepartmentResult=await db.addDepartment(depName);
     viewAllDepartments();
@@ -156,36 +164,43 @@ async function addDepartment(){
 
 
  async function addRole(){
+
     const departmentName=[];
     const departmentResult=await db.viewAllDepartments();
     for(let i=0;i<departmentResult.length;i++){
        departmentName.push(departmentResult[i].DEPARTMENT);
     }
+
     prompt.addRole.push({
                          type:'list',
                          name:'depName',
                          message:'what department does the Role belong?',
                          choices:departmentName
                         });
+
       const {roleTitle,roleSalary,depName}=await inquirer.prompt(prompt.addRole);
       const roleDepartmentId=departmentResult.filter((depId)=>depId.DEPARTMENT===depName)[0].id;
+      //cnnection to index.js  to run the query add role for adding the role
       const addRoleResult=await db.addRole(roleTitle,roleSalary,roleDepartmentId) ;
       getRoles();                 
    }
 
    async function updateEmployeeRole(){
+      //function to update the employee role
       const empData=await db.getEmployees();
       const roleData=await db.getRoles();
+      //to get the emp name intilized the array to push the employee name
       const empName=[];
+
       for(let i=0;i<empData.length;i++){
          empName.push(empData[i].first_name+' '+empData[i].last_name);
       }
-
+      //to get the emp role an array is initialised to push the role from employee table
       const empRole=[];
       for(let i=0;i<roleData.length;i++){
          empRole.push(roleData[i].title);
       }
-
+//inquirer prompt for user to answer the questions
       const updateRole=[];
       updateRole.push({
          type:'list',
@@ -212,13 +227,15 @@ async function addDepartment(){
        ((empid)=>empid.first_name===empFirstName &&
          empid.last_name===empLastName )[0].id;
        
-      const roleId=roleData.filter((roleid)=>roleid.title===employeeRole)[0].id
+      const roleId=roleData.filter((roleid)=>roleid.title===employeeRole)[0].id;
+      //connecting the database to update the employee role
       const updateEmployeeResult=await db.updateEmployeeRole(roleId,empId);
       viewAllEmployees();
 
    }
 
    async function updateEmployeeManager(){
+   
       const empData=await db.getEmployees();
       const empName=[];
       for(let i=0;i<empData.length;i++){
@@ -236,7 +253,7 @@ async function addDepartment(){
       const {employeeName}=await inquirer.prompt(updateName);
       
       const empManagerName=empName.filter((managerName)=>
-                      managerName.empName!=employeeName);
+                      managerName!=employeeName);
        const updateManager=[];
       updateManager.push({
          type:'list',
@@ -264,33 +281,46 @@ async function addDepartment(){
       viewAllEmployees();
    }
   async function removeEmployee(){
-   const empData=await db.getEmployees();
-   const empName=[];
-   for(let i=0;i<empData.length;i++){
-      empName.push(empData[i].first_name+' '+empData[i].last_name);
-   }
+// Get all details from employee table
+const employeeResult = await db.getEmployees();
+	
+let employeeNames = [];
+for (let i = 0; i < employeeResult.length; i++) {
+   employeeNames.push(employeeResult[i].first_name + " " + employeeResult[i].last_name
+   );
+}
 
-   const removeName=[];
-   removeName.push({
-      type:'list',
-      name:'employeeName',
-      message:"Which Employee's Manager would you like to update",
-      choices:empName
-   })
-   const {employeeName}=await inquirer.prompt(removeName);
+// array for inquirer prompt
+let removeEmpPrompt = [];
 
-   const empFirstName=employeeName.split(' ')[0];
-   console.log(empFirstName);
-   const empLastName=employeeName.split(' ')[1];
-   console.log(empLastName);
+// Get employee name to remove
+removeEmpPrompt.push({
+   type: "list",
+   name: "empName",
+   message: "Which employee do you want to remove?",
+   choices: employeeNames,
+});
 
-   const empId=empData.filter
-   ((empid)=>empid.first_name===empFirstName &&
-     empid.last_name===empLastName )[0].id;
+// Prompt user for employee name to remove
+const { empName } = await inquirer.prompt(removeEmpPrompt);
 
-     const removeEmpManagerResult=await db.removeEmployee(empId);
-     viewAllEmployees();
-  }
+// Split Employee's name
+const empFirstName = empName.split(" ")[0];
+const empLastName = empName.split(" ")[1];
+
+// Get employee Id from employee name
+const empId = employeeResult.filter(
+   (employee) =>
+      employee.first_name === empFirstName &&
+      employee.last_name === empLastName
+)[0].id;
+  
+// update database
+const removeEmployeeResult = await db.removeEmployee(empId);
+
+viewAllEmployees();
+}
+
 
    function init() {
       

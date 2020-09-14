@@ -37,7 +37,6 @@ module.exports={
             type:'input',
             name:'depName',
             message:'What department would you like to add'
-
         },
     ],
 
