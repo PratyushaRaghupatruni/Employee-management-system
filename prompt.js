@@ -32,7 +32,7 @@ module.exports={
           message:'What is Employees Last Name' 
         },
     ],
-    departmentData:[
+   addDepartment:[
         { 
             type:'input',
             name:'depName',

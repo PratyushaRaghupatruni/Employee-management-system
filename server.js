@@ -46,7 +46,7 @@ async function mainprompt(){
             updateEmployeeRole();
           break;
        case 'Update employee manager':
-            uddateEmployeeManager();
+            updateEmployeeManager();
           break;
        case 'Remove Employee':
              removeEmployee();
@@ -149,13 +149,13 @@ async function addEmployee(){
 }
 
 async function addDepartment(){
+   const {depName}=await inquirer.prompt(prompt.addDepartment);
     const addDepartmentResult=await db.addDepartment(depName);
     viewAllDepartments();
 }
 
 
  async function addRole(){
- 
     const departmentName=[];
     const departmentResult=await db.viewAllDepartments();
     for(let i=0;i<departmentResult.length;i++){
@@ -168,11 +168,124 @@ async function addDepartment(){
                          choices:departmentName
                         });
       const {roleTitle,roleSalary,depName}=await inquirer.prompt(prompt.addRole);
-      
       const roleDepartmentId=departmentResult.filter((depId)=>depId.DEPARTMENT===depName)[0].id;
-      
       const addRoleResult=await db.addRole(roleTitle,roleSalary,roleDepartmentId) ;
       getRoles();                 
    }
 
-viewAllEmployees();
+   async function updateEmployeeRole(){
+      const empData=await db.getEmployees();
+      const roleData=await db.getRoles();
+      const empName=[];
+      for(let i=0;i<empData.length;i++){
+         empName.push(empData[i].first_name+' '+empData[i].last_name);
+      }
+
+      const empRole=[];
+      for(let i=0;i<roleData.length;i++){
+         empRole.push(roleData[i].title);
+      }
+
+      const updateRole=[];
+      updateRole.push({
+         type:'list',
+         name:'employeeName',
+         message:'Which Employees Role would you like to update',
+         choices:empName
+      });
+      console.log(empRole);
+       updateRole.push({
+          type:'list',
+          name:'employeeRole',
+          message:'Which role should be updated for current employee',
+          choices:empRole
+       })
+
+       const  {employeeName,employeeRole}=await inquirer.prompt(updateRole);
+
+       const empFirstName=employeeName.split(' ')[0];
+       console.log(empFirstName);
+       const empLastName=employeeName.split(' ')[1];
+       console.log(empLastName);
+
+       const empId=empData.filter
+       ((empid)=>empid.first_name===empFirstName &&
+         empid.last_name===empLastName )[0].id;
+       
+      const roleId=roleData.filter((roleid)=>roleid.title===employeeRole)[0].id
+      const updateEmployeeResult=await db.updateEmployeeRole(roleId,empId);
+      viewAllEmployees();
+
+   }
+
+   async function updateEmployeeManager(){
+      const empData=await db.getEmployees();
+      const empName=[];
+      for(let i=0;i<empData.length;i++){
+         empName.push(empData[i].first_name+' '+empData[i].last_name);
+      }
+
+      const updateName=[];
+      updateName.push({
+         type:'list',
+         name:'employeeName',
+         message:"Which Employee's Manager would you like to update",
+         choices:empName
+      })
+       
+      const {employeeName}=await inquirer.prompt(updateName);
+      
+      const empManagerName=empName.filter((managerName)=>
+                      managerName.empName!=employeeName);
+       const updateManager=[];
+      updateManager.push({
+         type:'list',
+         name:'empManager',
+         message:"Who is Employee's New Manager",
+         choices:empManagerName
+      });
+       
+
+      const {empManager}=await inquirer.prompt(updateManager);
+
+      const empFirstName=empName.split(' ')[0];
+      console.log(empFirstName);
+      const empLastName=empName.split(' ')[1];
+      console.log(empLastName);
+
+      const empId=empData.filter
+      ((empid)=>empid.first_name===empFirstName &&
+        empid.last_name===empLastName )[0].id;
+
+      const managerFirstName=empManager.split(' ')[0];
+      const managerLastName=empManager.split(' ')[1];
+      const managerId=empData.filter((managerid)=>managerid.first_name===managerFirstName &&
+                                                  managerid.last_name===managerLastName)[0].id;
+      const updateEmpManagerResult=await db.updateEmployeeManager(managerId,empId);
+      viewAllEmployees();
+   }
+  async function removeEmployee(){
+
+  }
+
+   function init() {
+
+      //logo
+      console.log(
+         logo({
+            name: 'Employee Management System',
+            font:'Colossal',
+            lineChars: 7,
+            padding: 2,
+            margin: 3,
+            borderColor: 'grey',
+            logoColor: 'bold-cyan',
+         })
+         .emptyLine()
+         .render()
+      );
+      // Called mainPrompt
+      mainprompt();
+   }
+
+   init();
