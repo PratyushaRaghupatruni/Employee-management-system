@@ -245,12 +245,11 @@ async function addDepartment(){
          choices:empManagerName
       });
        
-
       const {empManager}=await inquirer.prompt(updateManager);
 
-      const empFirstName=empName.split(' ')[0];
+      const empFirstName=employeeName.split(' ')[0];
       console.log(empFirstName);
-      const empLastName=empName.split(' ')[1];
+      const empLastName=employeeName.split(' ')[1];
       console.log(empLastName);
 
       const empId=empData.filter
@@ -265,7 +264,32 @@ async function addDepartment(){
       viewAllEmployees();
    }
   async function removeEmployee(){
+   const empData=await db.getEmployees();
+   const empName=[];
+   for(let i=0;i<empData.length;i++){
+      empName.push(empData[i].first_name+' '+empData[i].last_name);
+   }
 
+   const removeName=[];
+   removeName.push({
+      type:'list',
+      name:'employeeName',
+      message:"Which Employee's Manager would you like to update",
+      choices:empName
+   })
+   const {employeeName}=await inquirer.prompt(removeName);
+
+   const empFirstName=employeeName.split(' ')[0];
+   console.log(empFirstName);
+   const empLastName=employeeName.split(' ')[1];
+   console.log(empLastName);
+
+   const empId=empData.filter
+   ((empid)=>empid.first_name===empFirstName &&
+     empid.last_name===empLastName )[0].id;
+
+     const removeEmpManagerResult=await db.removeEmployee(empId);
+     viewAllEmployees();
   }
 
    function init() {
