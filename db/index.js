@@ -91,7 +91,13 @@ class DB {
            SELECT id,name AS DEPARTMENT FROM department;
        `);
     }
-
+    
+    getRoles(){
+        return this.connection.query(`
+        SELECT * FROM role;
+    `);
+    }
+    
     addEmployee(firstName, lastName, roleId, managerId) {
 
          return this.connection.query(
@@ -107,7 +113,6 @@ class DB {
     }
 
     addDepartment(depName) {
-     
        return  this.connection.query(
               "INSERT INTO department SET ?",
               {
@@ -171,7 +176,7 @@ class DB {
                 ],
             );
     }
-    
+
     exitConnection() {
         try {
 			this.connection.end();

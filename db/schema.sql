@@ -31,6 +31,8 @@ CREATE TABLE role(
    PRIMARY KEY(id)
 
 );
+
+
 -- Creates the table "people" within employee_db --
 
 
