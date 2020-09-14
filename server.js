@@ -293,8 +293,7 @@ async function addDepartment(){
   }
 
    function init() {
-
-      //logo
+      
       console.log(
          logo({
             name: 'Employee Management System',
@@ -308,7 +307,7 @@ async function addDepartment(){
          .emptyLine()
          .render()
       );
-      // Called mainPrompt
+     
       mainprompt();
    }
 
